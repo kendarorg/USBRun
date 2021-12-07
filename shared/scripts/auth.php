@@ -22,6 +22,7 @@ function findUserId(){
 		$value = trim($ar[1]);
 		if($key=="NAS_USER"){
 			$GLOBALS['uid']=$value;
+			//TODOK
 			//$groupsResult = runShellCommand("groups ".$value,$GLOBALS['uid'],true);
 			$cmd = "groups ".$GLOBALS['uid'];
 			$groupsResult = trim(shell_exec($cmd ));

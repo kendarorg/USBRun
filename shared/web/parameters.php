@@ -59,7 +59,7 @@ function doCheck($data){
 		return $result;
 	}
 		
-	
+	//TODOK
 	//$cmd = $data['values']['sudo']." -u ".$data['values']['admin']." groups ".$data['values']['admin'];
 	$cmd = "groups ".$data['values']['admin'];
 	$groupsResult = trim(shell_exec($cmd ));

@@ -78,6 +78,7 @@ function readFileIfExists(){
 
 
 function getTempPath(){
+	//TODOK
 	//$path = ltrim(implode("/",func_get_args()),"/");
 	//return rtrim(sys_get_temp_dir()."/USBRun/".$path,"/");
 	return rtrim(sys_get_temp_dir(),"/");
