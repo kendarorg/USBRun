@@ -1,0 +1,190 @@
+body {
+	font-family: Arial;
+	font-size: 16px;
+}
+
+#uploadScript {
+  display: none;
+}
+
+th {
+	background-color: #e6f2ff;
+	font-size: 18px;
+	text-align: center;
+	text-decoration: none;
+	font-weight: bold;
+	color: #1E90FF;
+	border: 0px;
+}
+
+.huge{
+	font-size: 18px;
+}
+
+td{
+	font-size: 18px;
+}
+
+tr{
+	vertical-align: baseline;
+}
+
+hr {
+  border: 1px solid #1E90FF;
+}
+
+.menubutton {
+	font-family: Arial;
+	border: 3px solid #1E90FF;
+	border-radius: 10px;
+	color: #1E90FF;
+	background-color: white;
+	padding: 10px 30px;
+	margin: 0 10px;
+	text-align: center;
+	text-decoration: none;
+	font-weight: bold;
+	display: inline-block;
+	font-size: 18px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.menubuttonselected {
+	font-family: Arial;
+	border: 3px solid #1E90FF;
+	border-radius: 10px;
+	color: #ffffff;
+	background-color: #1E90FF;
+	padding: 10px 30px;
+	margin: 0 10px;
+	text-align: center;
+	text-decoration: none;
+	font-weight: bold;
+	display: inline-block;
+	font-size: 18px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.menubutton:hover {
+	border-radius: 10px;
+	background: #1E90FF;
+	color: #ffffff;
+}
+
+/* Tooltip container */
+.tooltip {
+	position: relative;
+	display: inline-block;
+	border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+	font-family: Arial;
+	font-size: 16px;
+	visibility: hidden;
+	font-weight: bold;
+	border: 2px solid #1E90FF;
+	width: 116px;
+	color: #1E90FF;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	background-color: #e6f2ff;;
+
+	/* Position the tooltip text - see examples below! */
+	position: absolute;
+	z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.button {
+	font-size: 18px;
+	border: 0px;
+	color: #1E90FF;
+	background-color: white;
+	padding: 5px 5px;
+	margin: 0 10px;
+	text-align: center;
+	text-decoration: none;
+	font-weight: bold;
+	display: inline-block;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+
+.fap{
+	padding-left: 10px;
+}
+
+.bcolor{
+	background-color: #e6e6ff;
+}
+
+.fa.disabled,
+.fa[disabled],
+.disabled > .fa,
+[disabled] > .fa {
+  opacity: 0.5;
+	color: #C0C0C0;
+  /*optional*/ cursor: not-allowed;
+  /*optional*/ pointer-events: none;
+}
+
+input[type="text"]
+{
+    font-size:16px;
+    border: 1px solid #000;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+textarea
+{
+    font-size:16px;
+    border: 1px solid #000;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+select
+{
+    font-size:16px;
+    border: 1px solid #000;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.center {
+	vertical-align: middle;
+}
+
+
+.navigatebutton {
+	font-size: 18px;
+	border: 0px;
+	color: #1E90FF;
+	background-color: white;
+	padding: 5px 5px;
+	margin: 0 10px;
+	text-align: center;
+	text-decoration: none;
+	font-weight: bold;
+	display: inline-block;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.navtext{
+	font-family: Arial;
+}

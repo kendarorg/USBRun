@@ -19,5 +19,3 @@ $GLOBALS['settings']=[
 	'admingroup'=>'administrators',
 	'uiport'=>'http://192.168.1.2:8080',
 ];
-
-//Should load them from a dumb file

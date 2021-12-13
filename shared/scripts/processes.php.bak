@@ -3,11 +3,12 @@
 require_once(dirname(__FILE__)."/commons.php");
 
 function isRunning($action){
-	$pidPath = getTempPath($action["uid"],$action['id'].".pid");
+
+$pidPath = getTempPath($action["uid"],$action['id'].".pid");
 	if(isset($GLOBALS['home'])){
 		$pidPath = $GLOBALS['home']."/".$action['id'].".pid";
 	}
-	return isPidRunning($pidPath);
+return isPidRunning($pidPath);
 	//return isPidRunning(getTempPath($action["uid"],$action['id'].".pid"));
 }
 
@@ -100,10 +101,11 @@ function runAction($action,$busDevice,$paths){
 	$pidPath = $GLOBALS['home']."/".$processName.".pid";
 	$executableFile = $GLOBALS['home']."/".$processName.".sh";
 	$logs = $GLOBALS['home']."/".$processName.".log";
-	$pid = readFileIfExists($pidPath);
+$pid = readFileIfExists($pidPath);
 	if (!($pid!=null && strlen($pid)>0)){
 		$pid = "NA";
 	}	
+	
 	if(isPidRunning($pidPath)){
 		systemLog("Already running ".$action["name"]." on ".$action["product"]."/".$action["manufacturer"]." pid:".$pid);
 		klog("Already running ".$action["name"]." pid: ".$pid,LWARNING);
