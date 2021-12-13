@@ -1,5 +1,3 @@
-//TODOK
-
 # QNAP USBRun
 
 This package installs a new application (USBRun) able to run an arbitrary bash script
