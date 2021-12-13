@@ -26,6 +26,10 @@ function enumerateGlobalSettings(){
 ?>
 <html>
 	<head>
+		
+
+			<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="basic.css">
 		<script src="jquery.js"></script>
 		<script>
 		function loadValues(){
@@ -40,7 +44,7 @@ function enumerateGlobalSettings(){
 			?>
 			};
 		}
-		function doCheck(){
+		function doCheck(showDialogs){
 			$.ajax({
 			    		url: "parameters.php",
 	    				type: "POST",
@@ -51,21 +55,28 @@ function enumerateGlobalSettings(){
 							$first = true;
 							foreach(enumerateGlobalSettings() as $key=>$value){
 								?>
-								$('#<?php echo $key;?>').css('background', '#33cc33');
+								$('#<?php echo $key;?>').css('background', '#d0ffc7');
 								<?php
 							}
 							?>
 			    			for(var i=0;i<data.length;i++){
-			    				$('#'+data[i]).css('background', '#ff3300');
+			    				$('#'+data[i]).css('background', '#ffd1cc');
+			    			}
+			    			if(showDialogs){
+				    			if(data.length>0){
+				    				alert("Some invalid values");
+				    			}else{
+				    				alert("Verification successful");
+			    				}
 			    			}
 			    		}
 			    	});
 		}
 		$(document).ready(function(){
 	<?php if($isAdmin){ ?>
-			doCheck();
+			doCheck(false);
 			$("#check").click(function(){
-			    	doCheck();
+			    	doCheck(true);
 			    });
 			$("#update").click(function(){
 			    $.ajax({
@@ -79,7 +90,7 @@ function enumerateGlobalSettings(){
 							$first = true;
 							foreach(enumerateGlobalSettings() as $key=>$value){
 								?>
-								$('#<?php echo $key;?>').css('background', allOk?'#33cc33':'#ff3300');
+								$('#<?php echo $key;?>').css('background', allOk?'#d0ffc7':'#ffd1cc');
 								<?php
 							}
 							?>
@@ -101,14 +112,14 @@ function enumerateGlobalSettings(){
 			    			for(var i=0;i<data.length;i++){
 			    				sub = data[i];
 			    				if(sub.size==0){
-			    					$('#'+sub.command).css('background', '#ff3300');
+			    					$('#'+sub.command).css('background', '#ffd1cc');
 			    					$('#'+sub.command).val("")
 			    				}else if(sub.size==1){
-			    					$('#'+sub.command).css('background', '#33cc33');
+			    					$('#'+sub.command).css('background', '#d0ffc7');
 			    					$('#'+sub.command).val(sub.paths);
 			    				}else{
 			    					hasMultiple= true;
-			    					$('#'+sub.command).css('background', '#FFFF00');
+			    					$('#'+sub.command).css('background', '#fffed4');
 			    					$('#'+sub.command).val(sub.paths);
 			    				}
 			    			}
@@ -126,7 +137,7 @@ function enumerateGlobalSettings(){
 		<?php require_once("menu.php");?>
 		<hr>
 		<?php
-		echo "<table><tr><td>Key</td><td>Value</td></tr>";
+		echo "<table><tr><th>Key</th><th>Value</th></tr>";
 			
 			foreach(enumerateGlobalSettings() as $key=>$value){
 				echo "<tr><td>";
@@ -136,26 +147,34 @@ function enumerateGlobalSettings(){
 			}
 			?>
 		</table>
-			<input type="button" id="check" name="check" value="Verify Values"/>
-			<input type="button" id="update" name="update" value="Update Values"/>
-			<input type="button" id="findall" name="findall" value="Find Executable Paths"/><br>
-			
+		<br>
+			<button class='button '  id='check'   name='check'>Verify Values<span class="fa fa-lg fap fa-check"></span></button>
+			<button class='button '  id='update'   name='update'>Update Values<span class="fa fa-lg fap fa-wrench"></span></button>
+			<button class='button '  id='findall'   name='findall'>Find Executable Paths<span class="fa fa-lg fap fa-search"></span></button>
+			<br>
+			<hr>
 			<?php
 			
 			echo "<ul>";
-			echo "<li>Verify runscript.php<br>";
+			echo "<li>Verify runscript";
 			require_once($GLOBALS['base']."/scripts/runscript.php");
-			echo "</li><li>Verify disks.php<br>";
+			echo '<span class="fa fa-sm fap fa-check">';
+			echo "</li><li>Verify disks";
 			require_once($GLOBALS['base']."/scripts/disks.php");
-			echo "</li><li>Verify apis.php<br>";
+			echo '<span class="fa fa-sm fap fa-check">';
+			echo "</li><li>Verify apis";
 			require_once($GLOBALS['base']."/scripts/apis.php");
-			echo "</li><li>Verify processes.php<br>";
+			echo '<span class="fa fa-sm fap fa-check">';
+			echo "</li><li>Verify processes";
 			require_once($GLOBALS['base']."/scripts/processes.php");
-			echo "</li><li>Verify usb.php<br>";
+			echo '<span class="fa fa-sm fap fa-check">';
+			echo "</li><li>Verify usb";
 			require_once($GLOBALS['base']."/scripts/usb.php");
+			echo '<span class="fa fa-sm fap fa-check">';
 			echo "</li></ul>";
 			
 			klog("SERVER PARAMETERS ".json_encode($_SERVER),LTRACE);
 		?>
+		<hr>
 	</body>
 </html>

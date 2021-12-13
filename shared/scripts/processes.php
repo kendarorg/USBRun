@@ -3,7 +3,12 @@
 require_once(dirname(__FILE__)."/commons.php");
 
 function isRunning($action){
-	return isPidRunning(getTempPath($action["uid"],$action['id'].".pid"));
+	$pidPath = getTempPath($action["uid"],$action['id'].".pid");
+	if(isset($GLOBALS['home'])){
+		$pidPath = $GLOBALS['home']."/".$action['id'].".pid";
+	}
+	return isPidRunning($pidPath);
+	//return isPidRunning(getTempPath($action["uid"],$action['id'].".pid"));
 }
 
 function getDataFiles($dataDir,$uidAndGroup,$isAdmin){
@@ -43,13 +48,17 @@ function findRealDevices($allowedFiles,$allDevices,$foundedFile){
 			}
 		}
 		if($localDevice == null){
-			$allDevices[]=[
+			$item = [
 				'serial'=>$file["action"]['serial'],
 				'product'=>$file["action"]['product'],
 				'manufacturer'=>$file["action"]['manufacturer'],
 				'type'=>'disconnected',
-				'paths'=>$file["action"]['paths']
+				'paths'=>[]
 			];
+			if(isset($file["action"]['paths'])){
+				$item['paths']=$file["action"]['paths'];
+			}
+			$allDevices[]=$item;
 		}
 		if($foundedFile==null){
 			if(isset($_GET['id'])&& $file['action']['id']==$_GET['id']){
@@ -91,8 +100,10 @@ function runAction($action,$busDevice,$paths){
 	$pidPath = $GLOBALS['home']."/".$processName.".pid";
 	$executableFile = $GLOBALS['home']."/".$processName.".sh";
 	$logs = $GLOBALS['home']."/".$processName.".log";
-	
-	
+	$pid = readFileIfExists($pidPath);
+	if (!($pid!=null && strlen($pid)>0)){
+		$pid = "NA";
+	}
 	if(isPidRunning($pidPath)){
 		systemLog("Already running ".$action["name"]." on ".$action["product"]."/".$action["manufacturer"]." pid:".$pid);
 		klog("Already running ".$action["name"]." pid: ".$pid,LWARNING);

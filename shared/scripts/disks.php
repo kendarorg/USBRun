@@ -85,8 +85,14 @@ function getdisklabel($diskid){
 	$partial = runShellCommand(
 		'ls -la /share|grep '.$nameToFind,
 		$GLOBALS['settings']['admin']);
+	if(sizeof($partial)==0){
+		return null;
+	}
 	 
 	 $partial = preg_split("/[\s]+/",$partial[0],-1,PREG_SPLIT_NO_EMPTY);
+	 if(sizeof($partial)>3){
+	 	return null;
+	 }
 	 return $partial[sizeof($partial)-3];
 }
 
@@ -99,10 +105,13 @@ function findDisks($devices){
 		
 		for($i=0;$i< sizeof($devices); $i++){	
 			if($udevAdm['busnum'] == $devices[$i]['busnum'] && $udevAdm['devnum'] == $devices[$i]['devnum']){
-				$devices[$i]['paths']=[];
-				$devices[$i]['paths'][] = "/share/".getdisklabel($usbDisk);
-				$devices[$i]['type']="usbdrive";
-				break;
+				$label = getdisklabel($usbDisk);
+				if($label!=null){
+					$devices[$i]['paths']=[];
+					$devices[$i]['paths'][] = "/share/".$label;
+					$devices[$i]['type']="usbdrive";
+					break;
+				}
 			}
 		}
 	}

@@ -13,7 +13,7 @@ if(!$isAdmin){
 	die();
 }
 
-$dataDir = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."data/usb";
+$dataDir = $GLOBALS['settings']['usbdatadir'];
 
 if(strtoupper($_SERVER['REQUEST_METHOD'])=="POST"){
 	$img = $_FILES["uploadScript"]["name"];
@@ -37,19 +37,36 @@ if(strtoupper($_SERVER['REQUEST_METHOD'])=="POST"){
 		if (file_exists($GLOBALS['settings']['mainerrorlog'])) {
 			unlink($GLOBALS['settings']['mainerrorlog']);
 		}
+	}else if($what=="scriptlog"){
+		
+		$logs = $GLOBALS['home']."/".$_GET['log'].".log";
+
+		$zip = new ZipArchive;
+		$tmp_file = tempnam (getTempPath(),"logs");
+		
+		
+	    if ($zip->open($tmp_file,  ZipArchive::CREATE)) {
+	    	
+	    	$data = readFileIfExists($logs);
+	    	$zip->addFromString('data.log',$data);
+		    
+	        $zip->close();
+	        header('Content-disposition: attachment; filename=logs.zip');
+	        header('Content-type: application/zip');
+	        readfile($tmp_file);
+	   }
 	}else if($what=="logs"){
 		
 		$zip = new ZipArchive;
-		$tmp_file = getTempPath()."/logs.zip";
+		$tmp_file = tempnam (getTempPath(),"logs");
 		
 		if (file_exists($tmp_file)) {
 		   unlink($tmp_file);
 		}
 	    if ($zip->open($tmp_file,  ZipArchive::CREATE)) {
-	    	if(!file_exists($GLOBALS['settings']['mainerrorlog'])){
-	    		error_log("Downloading error log");
-	    	}
-	    	$zip->addFile($GLOBALS['settings']['mainerrorlog'], 'error.log');
+	    	
+	    	$data = readFileIfExists($GLOBALS['settings']['mainerrorlog']);
+	    	$zip->addFromString('error.log',$data);
 	        
 	        $zip->close();
 	        header('Content-disposition: attachment; filename=logs.zip');
@@ -59,7 +76,7 @@ if(strtoupper($_SERVER['REQUEST_METHOD'])=="POST"){
 	}else if($what=="backup"){
 		
 		$zip = new ZipArchive;
-		$tmp_file = getTempPath()."/backup.zip";
+		$tmp_file = tempnam (getTempPath(),"logs");
 		
 		if (file_exists($tmp_file)) {
 		   unlink($tmp_file);

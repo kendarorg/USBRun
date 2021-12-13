@@ -1,14 +1,9 @@
 <?php
-
 require_once(dirname(__FILE__)."/commons.php");
 require_once($GLOBALS['base']."/scripts/apis.php");
 require_once($GLOBALS['base']."/scripts/usb.php");
 require_once($GLOBALS['base']."/scripts/disks.php");
 require_once($GLOBALS['base']."/scripts/processes.php");
-
-
-
-
 
 function runActionUdev($action,$busDevice,$paths){
 	systemLog("Recognized ".$action["name"]." on ".$action["product"]."/".$action["manufacturer"]);
@@ -143,7 +138,11 @@ function executeRunScript($arguments){
 			$udevAdm['product']=$product;
 			$udevAdm['type']="usbdrive";
 			//The device is the one just inserted
-			$paths = ["/share/".getdisklabelblkid($usbDisk)];	//cat /proc/mounts|grep /dev/sdd1|cut -f2 "-d "
+			$label = getdisklabelblkid($usbDisk);
+			if($label==null){
+				$label = "MISSING_LABEL_ON_DISK";
+			}
+			$paths = ["/share/".$label];	//cat /proc/mounts|grep /dev/sdd1|cut -f2 "-d "
 			klog("Paths founded ".var_export($paths,true),LTRACE);
 			$action = findActionForItemUdev($udevAdm,$paths);
 			if($action!=null){

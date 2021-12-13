@@ -14,7 +14,7 @@ if(!$isAdmin){
 
 $foundedFile = null;
 
-$dataDir = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."data/usb";
+$dataDir = $GLOBALS['settings']['usbdatadir'];
 $allowedFiles = getDataFiles($dataDir,$uidAndGroup,$isAdmin);
 $allDevices = lsusb();
 $allDevices = findDisks($allDevices);
@@ -64,6 +64,9 @@ if($foundedFile==null){
 ?>
 <html>
 	<head>
+		
+	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="basic.css">
 	<script src="jquery.js"></script>
 	<script>
 	function readLogsData(){
@@ -84,22 +87,24 @@ if($foundedFile==null){
 			    		script:document.getElementById("script").value,
 			    		serial:document.getElementById("serial").value,
 			    		pollid:window.readscripttimes,
-			    		start:document.getElementById("start").value
+			    		start:-0,
+			    		count:-30
     				}, 
     				success: function(result){
     					resultData = JSON.parse(result);
-    					if(resultData['status']=="FINISHED"){
+    					if(resultData['running']==false){
     						window.clearInterval(document.interval);
     						document.interval=null;
     						$("#running").html("");
     						$('#kill').prop('disabled', true);
 							$('#test').prop('disabled', false);
 							$('#save').prop('disabled', false);
+							document.getElementById("testresult").innerHTML=resultData['content'];
     						return;
     					}
     					window.readscripttimes++;
     					//console.log("Reading log "+JSON.stringify(result));
-    					document.getElementById("testresult").innerHTML+=resultData['content'];
+    					document.getElementById("testresult").innerHTML=resultData['content'];
     					document.getElementById("start").value=resultData['end'];
     				}, 
     				error: function(jqXHR, textStatus, errorThrown) {
@@ -119,13 +124,10 @@ if($foundedFile==null){
 	$(document).ready(function(){
 		document.getElementById("eject").checked=<?php echo $eject;?>;
 		document.getElementById("disabledx").checked=<?php echo $disabled;?>;
-		
+		readLogsData();
 		
 		$("#logs").click(function(){
 			window.location="usblogs.php?id=<?php echo $uuid;?>";
-			});
-		$("#clear").click(function(){
-		    document.getElementById("testresult").innerHTML="";
 			});
 		$("#save").click(function(){
 		    $.ajax({
@@ -207,12 +209,11 @@ if($foundedFile==null){
 		
 		<?php require_once("menu.php");?>
 		<hr>
+		<button class='tooltip button fa fa-2x fa-file-text-o' id='logs' name='logs'><span class='tooltiptext'>Logs</span></button>
+		<button class='tooltip button fa fa-2x fa-floppy-o' id='save' name='save'><span class='tooltiptext'>Save</span></button>
+		<button class='tooltip button fa fa-2x fa-play'  id='test'  name='test' ><span class='tooltiptext'>Test</span></button>
+		<button class='tooltip button fa fa-2x fa-stop'  id='kill'   name='kill'  ><span class='tooltiptext'>Kill</span></button>
 		<span id="running" name="running"></span>
-		<input type="button" id="logs" name="logs" value="Logs"/>
-		<input type="button" id="save" name="save" value="Save"/>
-		<input type="button" id="test" name="test" value="Test"/>
-		<input type="button" id="kill" name="kill" value="Kill"/>
-		<input type="button" id="clear" name="clear" value="Clear Output"/>
 		<hr>
 			<input type="hidden" id="start" name="start" value="0"/>
 			<input type="hidden" id="id" name="id" value="<?php echo $uuid;?>"/>
@@ -241,8 +242,9 @@ if($foundedFile==null){
 			</select><br><br>
 			Script: <br>
 			<b>#!/bin/sh</b><br>
-			<textarea id="script" name="script" rows="5" cols="50"><?php echo $script;?></textarea><br><br>
+			<textarea id="script" name="script" rows="5" cols="100"><?php echo $script;?></textarea><br><br>
 	<hr>
 		<div id="testresult" name="testresult"></div>
+		<hr>
 	</body>
 </html>

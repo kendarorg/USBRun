@@ -21,6 +21,7 @@ $logs = $GLOBALS['home']."/".$foundedFile['id'].".log";
 $pidPath = $GLOBALS['home']."/".$foundedFile['id'].".pid";
 
 if(!isPidRunning($pidPath)){
+	$pid = readFileIfExists($pidPath);
 	klog("finished ".$foundedFile["name"]." pid: ".$pid, LWARNING);
     return;
 }

@@ -11,6 +11,8 @@ $GLOBALS['settings']=[
 	'chmod'=>'/bin/chmod',
 	'writelog'=>'/sbin/write_log',
 	'whoami'=>'/usr/bin/whoami',
+	'sed'=>'/bin/sed',
+	'wc'=>'/usr/bin/wc',
 	
 	
 	'homes'=>'/share/homes',

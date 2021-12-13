@@ -13,15 +13,25 @@ if(!$isAdmin){
 	die();
 }
 
-$dataDir = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."data/usb";
+$dataDir = $GLOBALS['settings']['usbdatadir'];
 $allowedFiles = getDataFiles($dataDir,$uidAndGroup,$isAdmin);
 
 ?>
 <html>
 	<head>
+		
+	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="basic.css">
 		<script src="jquery.js"></script>
 		<script>
+			
+		function onChangeFile(elm){
+			document.getElementById("filename").value = $(elm).val();
+		}
 		$(document).ready(function(){
+			$('#fakeButton').click(function() {
+			  $('#uploadScript').click();
+			});
 			window.isPolling = false;
 			window.setInterval(function() {
 				if(window.isPolling){
@@ -49,12 +59,12 @@ $allowedFiles = getDataFiles($dataDir,$uidAndGroup,$isAdmin);
     							if(!$(startid).prop('disabled')) $(startid).prop('disabled',true);
     							if(!$(deleteid).prop('disabled')) $(deleteid).prop('disabled',true);
     							
-    							if($(runningid).html()=="NA") $(runningid).html("<img src='ajax-loader.gif'></img>");
+    							if($(runningid).html()=="&nbsp;") $(runningid).html("<img src='ajax-loader.gif'></img>");
     						}else {
     							if(!$(killid).prop('disabled')) $(killid).prop('disabled',true);
     							if($(startid).prop('disabled')) $(startid).prop('disabled',false);
     							if($(deleteid).prop('disabled')) $(deleteid).prop('disabled',false);
-			    				if($(runningid).html()!="NA") $(runningid).html("NA");
+			    				if($(runningid).html()!="&nbsp;") $(runningid).html("&nbsp;");
     						}
 						}
 						window.isPolling = false;
@@ -174,37 +184,45 @@ $allowedFiles = getDataFiles($dataDir,$uidAndGroup,$isAdmin);
 	<body>
 		<?php require_once("menu.php");?>
 		<hr>
-		<table  border="1px">
+		<table>
 			<tr>
-				<td>
+				<th>
 					Id
-				</td>
-				<td>
+				</th>
+				<th>
 					Owner
-				</td>
-				<td>
+				</th>
+				<th>
 					Process
-				</td>
-				<td>
+				</th>
+				<th>
 					State
-				</td>
-				<td>
+				</th>
+				<th>
 					Actions
-				</td>
+				</th>
 			</tr>
-		<?php foreach($allowedFiles as $file){
+		<?php 
+		$i=0;
+		foreach($allowedFiles as $file){
 			$fairId = str_replace("-","",$file["action"]["id"]);
 			$safeName = str_replace("'","\\'",$file["action"]["name"]);
-			echo "<tr>";
+			if($i%2==0){
+				echo "<tr class='bcolor'>";
+			}else{
+				echo "<tr>";
+			}
+			$i++;
 			echo "<td>".$file["action"]["id"]."</td>";
 			echo "<td>".$file["action"]["uid"]."</td>";
 			echo "<td>".$file["action"]["name"]."</td>";
-			echo "<td><span id='state".$fairId."' name='state".$fairId."'>NA</span></td>";
-			echo "<td><input type='button' id='kill".$fairId."' name='kill".$fairId."' value='Kill'/>";
-			echo "<input type='button' id='start".$fairId."' name='start".$fairId."' value='Start'/>";
-			echo "<input type='button' id='delete".$fairId."' name='delete".$fairId."' value='Delete'/>";
-			echo "<input type='button' id='edit".$fairId."' name='edit".$fairId."' value='Edit'/>";
-			echo "<input type='button' id='logs".$fairId."' name='logs".$fairId."' value='Logs'/></td>";
+			echo "<td><span id='state".$fairId."' name='state".$fairId."'>&nbsp;</span></td>";
+			echo "<td>";
+			echo "<button class='tooltip button fa fa-2x fa-stop'  id='kill".$fairId."'   name='kill".$fairId."'  ><span class='tooltiptext'>Kill</span></button>";
+			echo "<button class='tooltip button fa fa-2x fa-play'  id='start".$fairId."'  name='start".$fairId."' ><span class='tooltiptext'>Start</span></button>";
+			echo "<button class='tooltip button fa fa-2x fa-trash-o' id='delete".$fairId."' name='delete".$fairId."'><span class='tooltiptext'>Delete</span></button>";
+			echo "<button class='tooltip button fa fa-2x fa-pencil' id='edit".$fairId."' name='edit".$fairId."'><span class='tooltiptext'>Edit</span></button>";
+			echo "<button class='tooltip button fa fa-2x fa-file-text-o' id='logs".$fairId."' name='logs".$fairId."'><span class='tooltiptext'>Logs</span></button>";
 			//echo "<a href='usbmaintenance.php?action=edit&id=".$file["action"]["id"]."'>Edit</a></td>";
 			//echo "<td><a href='usblogs.php?id=".$file["action"]["id"]."'>Logs</a></td>";
 			//echo "<td><a href='usblogs.php?id=".$file["action"]["id"]."'>Logs</a></td>";
@@ -212,18 +230,18 @@ $allowedFiles = getDataFiles($dataDir,$uidAndGroup,$isAdmin);
 		}?>
 		</table>
 		<hr>
-		<input type='button' id='add' name='add' value='Add'/>&nbsp;
+		<button class='button'  id='add'   name='add'  >Create New<span class='fa fap fa-lg fa-plus'></span></button>
 		<hr>
-		<b>Upload script</b>
 		<form id="formUpload" action="download.php" method="post" enctype="multipart/form-data">
-			<input id="uploadScript" name="uploadScript" type="file" accept="application/json"  />
-			<input type="submit" value="Upload">
+			<div class='tooltip button fa fa-2x fa-search'  id='fakeButton'   name='fakeButton'  ><span class='tooltiptext'>Browse...</span></div>
+			<input id="uploadScript" name="uploadScript" type="file" accept="application/json" onchange="onChangeFile(this)" />
+			<input type="text" id="filename" size="50" name="filename" readonly />
+			<button type="submit" class='button '  id='upload'   name='upload'><span class="fa fa-lg fap fa-upload"></span></button>
 		</form>
 		<hr>
-		<input type='button' id='backup' name='backup' value='Download Scripts'/>&nbsp;
-		<input type='button' id='logs' name='logs' value='Download Main Logs'/>&nbsp;
-		<input type='button' id='cleanlogs' name='cleanlogs' value='Clean Main Logs'/>
-		
-		
+		<button class='button '  id='backup'   name='backup'>Download Scripts<span class="fa fa-lg fap fa-download"></span></button>
+		<button class='button '  id='logs'   name='logs'>Download Logs<span class="fa fa-lg fap fa-download"></span></button>
+		<button class='button '  id='cleanlogs'   name='cleanlogs'>Clean Logs<span class="fa fa-lg fap fa-eraser"></span></button>
+		<hr>
 	</body>
 </html>

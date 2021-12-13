@@ -54,7 +54,6 @@ function isPidRunning($pidPath){
 		}
 	}
 	$screenId = pathinfo($pidPath)['filename'];
-	
 	return runShellCommand(
 		$GLOBALS['settings']['screen']." -list|grep  ".$screenId."|cut -f2",
 		$GLOBALS['settings']['admin'],true)!="";
@@ -76,12 +75,70 @@ function readFileIfExists(){
 	return trim(shell_exec($cmd));
 }
 
+function getFileLines(){
+	$args = func_get_args();
+	$path = "/".ltrim(implode("/",$args),"/");
+	if(!is_file($path)) return 0;
+	$cmd = $GLOBALS['settings']['wc']." -l ".$path;
+	if(!amithis($GLOBALS['settings']['admin'])){
+		$cmd = $GLOBALS['settings']['sudo']." -u ".$GLOBALS['settings']['admin']." ".$cmd;
+	}
+	$result = trim(shell_exec($cmd));	
+	return preg_split("/[\s]+/",$result,-1,PREG_SPLIT_NO_EMPTY)[0]+0;
+}
+
+function readPartialFileIfExists(){
+	$args = func_get_args();
+	$pathArray = array_slice($args,0,sizeof($args)-2);
+	$from = $args[sizeof($args)-2]+0;
+	$to = $args[sizeof($args)-1]+0;
+	$path = "/".ltrim(implode("/",$pathArray),"/");
+	
+	$fileLines = getFileLines($path);
+	
+	if($to< 0){
+		$from = max(0,$fileLines+$to);
+		$to = $fileLines;
+	}
+	if($from >= $fileLines) return "";
+	if($to >= $fileLines) {
+		$to = $fileLines-1;
+	}
+	if(!is_file($path)) return null;
+	$cmd = $GLOBALS['settings']['sed']." -n ".($from+1).",".($to+1)."p ".$path;
+	if(!amithis($GLOBALS['settings']['admin'])){
+		$cmd = $GLOBALS['settings']['sudo']." -u ".$GLOBALS['settings']['admin']." ".$cmd;
+	}
+	
+	return trim(shell_exec($cmd));
+}
+
+
+function tailExists(){
+	$args = func_get_args();
+	$pathArray = array_slice($args,0,sizeof($args)-2);
+	$from = $args[sizeof($args)-2]+0;
+	$to = $args[sizeof($args)-1]+0;
+	$path = "/".ltrim(implode("/",$pathArray),"/");
+	
+	$fileLines = getFileLines($path);
+	if($from >= $fileLines) return "";
+	if($to >= $fileLines) {
+		$to = $fileLines-1;
+	}
+	if(!is_file($path)) return null;
+	$cmd = $GLOBALS['settings']['sed']." -n ".($from+1).",".($to+1)."p ".$path;
+	if(!amithis($GLOBALS['settings']['admin'])){
+		$cmd = $GLOBALS['settings']['sudo']." -u ".$GLOBALS['settings']['admin']." ".$cmd;
+	}
+	
+	return trim(shell_exec($cmd));
+}
+
 
 function getTempPath(){
-	//TODOK
-	//$path = ltrim(implode("/",func_get_args()),"/");
-	//return rtrim(sys_get_temp_dir()."/USBRun/".$path,"/");
-	return rtrim(sys_get_temp_dir(),"/");
+	$path = trim(implode("_",func_get_args()),"/");
+	return rtrim(sys_get_temp_dir()."/".$path,"/");
 }
 
 function guidv4($data = null) {

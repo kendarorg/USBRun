@@ -17,7 +17,7 @@ $logs = $GLOBALS['home']."/".$foundedFile['id'].".log";
 $pidPath = $GLOBALS['home']."/".$foundedFile['id'].".pid";
 $shPath = $GLOBALS['home']."/".$foundedFile['id'].".sh";
 
-$jsonFile = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."data/usb/".$foundedFile['id'].".json";
+$jsonFile = $GLOBALS['settings']['usbdatadir']."/".$foundedFile['id'].".json";
 
 
 if (file_exists( $logs )){

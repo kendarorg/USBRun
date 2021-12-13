@@ -13,7 +13,7 @@ if(!$isAdmin){
 	die();
 }
 
-$dataDir = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."data/usb";
+$dataDir = $GLOBALS['settings']['usbdatadir'];
 $allowedFiles = getDataFiles($dataDir,$uidAndGroup,$isAdmin);
 $allDevices = lsusb();
 $allDevices = findDisks($allDevices);
@@ -33,29 +33,44 @@ $allDevices = enrichDevices($allDevices,$allowedFiles);
 //$allDevices = findRealDevices($allowedFiles,$allDevices,$foundedFile);
 ?>
 <html>
+	<head>
+		
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="basic.css">
+	</head>
 	<body>
 		<?php require_once("menu.php");?>
 	<hr>
-		<table  border="1px">
+		<table>
 			<tr>
-				<td>
-					Name
-				</td>
-				<td>
+				<th>
+					Manufacturer
+				</th>
+				<th>
+					Product
+				</th>
+				<th>
 					Type
-				</td>
-				<td>
+				</th>
+				<th>
 					Serial
-				</td>
-				<td>
+				</th>
+				<th>
 					Path
-				</td>
+				</th>
 			</tr>
 
 <?php
+$i=0;
 foreach($allDevices as $device){
-	echo "<tr>";
-	echo "<td>".$device['manufacturer']."=>".$device['product']."</td>";
+	if($i%2==0){
+		echo "<tr class='bcolor'>";
+	}else{
+		echo "<tr>";
+	}
+	$i++;
+	echo "<td>".$device['manufacturer']."</td>";
+	echo "<td>".$device['product']."</td>";
 	echo "<td>".(isset($device['type'])?$device['type']:"")."</td>";
 	echo "<td>".$device['serial']."</td>";
 	echo "<td>";
@@ -72,6 +87,7 @@ foreach($allDevices as $device){
 }
 ?>
 		</table>
+		<hr>
 	</body>
 </html>
 	
