@@ -124,6 +124,8 @@ function runAction($action,$busDevice,$paths){
 	cleanLogs();
 	runShellCommand("touch ".$logs,
 		$GLOBALS['settings']['admin']);
+	runShellCommand("touch ".$pidPath,
+		$GLOBALS['settings']['admin']);
 	runShellCommand($GLOBALS['settings']['chmod']." 777 ".$executableFile,
 		$GLOBALS['settings']['admin']);
 	runShellCommand($GLOBALS['settings']['chmod']." 777 ".$logs,

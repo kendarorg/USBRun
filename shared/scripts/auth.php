@@ -26,6 +26,7 @@ function findUserId(){
 			$cmd = "groups ".$GLOBALS['uid'];
 			$groupsResult = trim(shell_exec($cmd ));
 			$groups = preg_split("/[\s]+/",$groupsResult,-1,PREG_SPLIT_NO_EMPTY);
+			//TODOK: $GLOBALS['home'] = getTempPath($GLOBALS['uid']);
 			$GLOBALS['home'] = getTempPath($GLOBALS['uid']);
 			
 			if(strpos($_SERVER['PHP_SELF'],"index.php")!==false){
